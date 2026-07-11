@@ -1,13 +1,25 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:pacelens/app/app.dart';
 
 void main() {
+  setUpAll(() {
+    PackageInfo.setMockInitialValues(
+      appName: 'PaceLens',
+      packageName: 'com.w3artists.pacelens',
+      version: '1.0.0',
+      buildNumber: '1',
+      buildSignature: '',
+    );
+  });
+
   testWidgets('home screen shows required actions and warning', (tester) async {
     await tester.pumpWidget(const ProviderScope(child: PaceLensApp()));
     await tester.pumpAndSettle();
 
     expect(find.text('PaceLens'), findsOneWidget);
+    expect(find.text('v1.0.0+1'), findsOneWidget);
     expect(find.text('Measure moving object'), findsOneWidget);
     expect(find.text('Analyse existing video'), findsOneWidget);
     expect(find.text('Previous results'), findsOneWidget);
