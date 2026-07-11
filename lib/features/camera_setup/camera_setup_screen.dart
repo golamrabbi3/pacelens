@@ -78,7 +78,7 @@ class CameraSetupScreen extends ConsumerWidget {
           FilledButton.icon(
             icon: const Icon(Icons.videocam),
             label: const Text('Open recording screen'),
-            onPressed: () => context.go('/record'),
+            onPressed: () => context.push('/record'),
           ),
         ],
       ),

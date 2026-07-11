@@ -1,12 +1,15 @@
 import Flutter
 import UIKit
 import AVFoundation
+import ARKit
 
 @main
 @objc class AppDelegate: FlutterAppDelegate, FlutterImplicitEngineDelegate {
   private let methodChannelName = "pacelens/high_speed_camera"
   private let eventChannelName = "pacelens/high_speed_camera/status"
   private let videoInspectorChannelName = "pacelens/video_inspector"
+  private let arDepthChannelName = "pacelens/ar_depth"
+  private let arDepthSamplesChannelName = "pacelens/ar_depth/samples"
 
   override func application(
     _ application: UIApplication,
@@ -68,7 +71,45 @@ import AVFoundation
         result(FlutterMethodNotImplemented)
       }
     }
+    FlutterMethodChannel(name: arDepthChannelName, binaryMessenger: messenger).setMethodCallHandler { [weak self] call, result in
+      guard let self else {
+        result(FlutterError(code: "NO_APP_DELEGATE", message: "App delegate is unavailable.", details: nil))
+        return
+      }
+      switch call.method {
+      case "checkCapability":
+        result(self.arDepthCapability())
+      case "startSession":
+        result(FlutterError(
+          code: "UNSUPPORTED_AR_DEPTH",
+          message: "ARKit depth sampling is not implemented in this build.",
+          details: nil
+        ))
+      case "stopSession":
+        result(nil)
+      default:
+        result(FlutterMethodNotImplemented)
+      }
+    }
     FlutterEventChannel(name: eventChannelName, binaryMessenger: messenger).setStreamHandler(CameraStatusStreamHandler())
+    FlutterEventChannel(name: arDepthSamplesChannelName, binaryMessenger: messenger).setStreamHandler(ArDepthSampleStreamHandler())
+  }
+
+  private func arDepthCapability() -> [String: Any] {
+    let reason: String
+    if #available(iOS 14.0, *) {
+      let supportsSceneDepth = ARWorldTrackingConfiguration.supportsFrameSemantics(.sceneDepth)
+      reason = supportsSceneDepth
+        ? "ARKit scene depth is available, but AR depth sampling is not implemented in this build."
+        : "This device does not support ARKit scene depth."
+    } else {
+      reason = "ARKit scene depth requires iOS 14.0 or newer."
+    }
+    return [
+      "supported": false,
+      "reason": reason,
+      "platform": "ios"
+    ]
   }
 
   private func supportedProfiles() -> [[String: Any]] {
@@ -219,6 +260,20 @@ final class CameraStatusStreamHandler: NSObject, FlutterStreamHandler {
       "motionScore": 0.0
     ])
     return nil
+  }
+
+  func onCancel(withArguments arguments: Any?) -> FlutterError? {
+    return nil
+  }
+}
+
+final class ArDepthSampleStreamHandler: NSObject, FlutterStreamHandler {
+  func onListen(withArguments arguments: Any?, eventSink events: @escaping FlutterEventSink) -> FlutterError? {
+    return FlutterError(
+      code: "UNSUPPORTED_AR_DEPTH",
+      message: "ARKit depth sampling is not implemented in this build.",
+      details: nil
+    )
   }
 
   func onCancel(withArguments arguments: Any?) -> FlutterError? {

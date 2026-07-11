@@ -63,7 +63,7 @@ class _VideoImportScreenState extends ConsumerState<VideoImportScreen> {
               label: const Text('Use synthetic debug video'),
               onPressed: () {
                 ref.read(analysisWorkflowProvider.notifier).resetSynthetic();
-                context.go('/calibration');
+                context.push('/calibration');
               },
             ),
         ],

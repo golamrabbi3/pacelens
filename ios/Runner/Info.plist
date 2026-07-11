@@ -7,7 +7,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>Pacelens</string>
+	<string>PaceLens</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -15,7 +15,7 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>pacelens</string>
+	<string>PaceLens</string>
 	<key>NSCameraUsageDescription</key>
 	<string>PaceLens uses the camera to record cricket deliveries for local speed analysis.</string>
 	<key>NSPhotoLibraryUsageDescription</key>

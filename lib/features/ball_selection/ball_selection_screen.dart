@@ -48,7 +48,7 @@ class BallSelectionScreen extends ConsumerWidget {
           FilledButton.icon(
             icon: const Icon(Icons.edit_location),
             label: const Text('Correct trajectory'),
-            onPressed: () => context.go('/tracking'),
+            onPressed: () => context.push('/tracking'),
           ),
         ],
       ),

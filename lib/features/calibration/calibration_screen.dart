@@ -113,7 +113,7 @@ class _CalibrationScreenState extends ConsumerState<CalibrationScreen> {
                 ref
                     .read(analysisWorkflowProvider.notifier)
                     .updateCalibration(calibration);
-                context.go('/ball-selection');
+                context.push('/ball-selection');
               } catch (_) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(

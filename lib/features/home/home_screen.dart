@@ -6,7 +6,7 @@ import 'package:go_router/go_router.dart';
 import '../analysis/analysis_controller.dart';
 
 const experimentalWarning =
-    'PaceLens provides an experimental camera-based cricket-ball speed estimate. Results depend on camera placement, frame rate, lighting, calibration, timestamp quality, tracking accuracy, and perspective. It is not a certified radar-speed measurement system.';
+    'PaceLens provides an experimental camera-based moving-object speed estimate. Results depend on camera placement, frame rate, lighting, calibration, timestamp quality, tracking accuracy, and perspective. It is not a certified radar-speed measurement system.';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -19,7 +19,7 @@ class HomeScreen extends ConsumerWidget {
         padding: const EdgeInsets.all(16),
         children: [
           Text(
-            'Cricket speed analysis',
+            'Moving-object speed analysis',
             style: Theme.of(context).textTheme.headlineMedium,
           ),
           const SizedBox(height: 12),
@@ -30,30 +30,29 @@ class HomeScreen extends ConsumerWidget {
           const SizedBox(height: 24),
           _HomeAction(
             icon: Icons.videocam,
-            title: 'Record delivery',
-            subtitle:
-                'Check native high-speed camera support before recording.',
-            onTap: () => context.go('/setup'),
+            title: 'Measure moving object',
+            subtitle: 'Use OpenCV live motion tracking with a fixed camera.',
+            onTap: () => context.push('/setup'),
           ),
           _HomeAction(
             icon: Icons.video_file,
             title: 'Analyse existing video',
             subtitle:
                 'Use only footage with valid timestamps and at least 60 FPS.',
-            onTap: () => context.go('/import'),
+            onTap: () => context.push('/import'),
           ),
           _HomeAction(
             icon: Icons.history,
             title: 'Previous results',
             subtitle:
                 'Local saved analyses only. Video bytes are not stored in the database.',
-            onTap: () => context.go('/history'),
+            onTap: () => context.push('/history'),
           ),
           _HomeAction(
             icon: Icons.rule,
             title: 'Setup guide',
             subtitle: 'Tripod, side-on view, bright lighting, 120 or 240 FPS.',
-            onTap: () => context.go('/setup'),
+            onTap: () => context.push('/setup'),
           ),
           if (kDebugMode)
             _HomeAction(
@@ -63,7 +62,7 @@ class HomeScreen extends ConsumerWidget {
                   'Generated moving-dot trajectory with known timestamps and speed.',
               onTap: () {
                 ref.read(analysisWorkflowProvider.notifier).resetSynthetic();
-                context.go('/calibration');
+                context.push('/calibration');
               },
             ),
         ],

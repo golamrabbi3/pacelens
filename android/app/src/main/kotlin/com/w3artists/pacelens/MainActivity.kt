@@ -1,4 +1,4 @@
-package com.pacelens.pacelens
+package com.w3artists.pacelens
 
 import android.content.Context
 import android.hardware.camera2.CameraCharacteristics
@@ -21,7 +21,10 @@ class MainActivity : FlutterActivity() {
     private val methodChannelName = "pacelens/high_speed_camera"
     private val eventChannelName = "pacelens/high_speed_camera/status"
     private val videoInspectorChannelName = "pacelens/video_inspector"
+    private val arDepthChannelName = "pacelens/ar_depth"
+    private val arDepthSamplesChannelName = "pacelens/ar_depth/samples"
     private var eventSink: EventChannel.EventSink? = null
+    private var arDepthEventSink: EventChannel.EventSink? = null
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
@@ -66,6 +69,20 @@ class MainActivity : FlutterActivity() {
                 else -> result.notImplemented()
             }
         }
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, arDepthChannelName).setMethodCallHandler { call, result ->
+            when (call.method) {
+                "checkCapability" -> result.success(arDepthCapability())
+                "startSession" -> result.error(
+                    "UNSUPPORTED_AR_DEPTH",
+                    "ARCore depth sampling is not implemented in this build.",
+                    null
+                )
+                "stopSession" -> {
+                    result.success(null)
+                }
+                else -> result.notImplemented()
+            }
+        }
         EventChannel(flutterEngine.dartExecutor.binaryMessenger, eventChannelName).setStreamHandler(
             object : EventChannel.StreamHandler {
                 override fun onListen(arguments: Any?, events: EventChannel.EventSink?) {
@@ -77,6 +94,40 @@ class MainActivity : FlutterActivity() {
                     eventSink = null
                 }
             }
+        )
+        EventChannel(flutterEngine.dartExecutor.binaryMessenger, arDepthSamplesChannelName).setStreamHandler(
+            object : EventChannel.StreamHandler {
+                override fun onListen(arguments: Any?, events: EventChannel.EventSink?) {
+                    arDepthEventSink = events
+                    arDepthEventSink?.error(
+                        "UNSUPPORTED_AR_DEPTH",
+                        "ARCore depth sampling is not implemented in this build.",
+                        null
+                    )
+                }
+
+                override fun onCancel(arguments: Any?) {
+                    arDepthEventSink = null
+                }
+            }
+        )
+    }
+
+    private fun arDepthCapability(): Map<String, Any> {
+        val hasArCamera = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
+            packageManager.hasSystemFeature("android.hardware.camera.ar")
+        } else {
+            false
+        }
+        val deviceReason = if (hasArCamera) {
+            "AR-capable camera detected, but ARCore depth sampling is not implemented in this build."
+        } else {
+            "This device or emulator does not report an AR-capable rear camera."
+        }
+        return mapOf(
+            "supported" to false,
+            "reason" to deviceReason,
+            "platform" to "android"
         )
     }
 

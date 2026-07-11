@@ -179,7 +179,7 @@ class _TrackingCorrectionScreenState
           FilledButton.icon(
             icon: const Icon(Icons.speed),
             label: const Text('Calculate speed'),
-            onPressed: () => context.go('/results'),
+            onPressed: () => context.push('/results'),
           ),
         ],
       ),

@@ -18,6 +18,22 @@ subprojects {
 subprojects {
     project.evaluationDependsOn(":app")
 }
+subprojects {
+    if (name == "opencv_dart") {
+        afterEvaluate {
+            extensions.configure<com.android.build.gradle.LibraryExtension>("android") {
+                compileSdk = 36
+            }
+        }
+    }
+    plugins.withId("com.android.library") {
+        if (name != "opencv_dart") {
+            extensions.configure<com.android.build.gradle.LibraryExtension>("android") {
+                compileSdk = 36
+            }
+        }
+    }
+}
 
 tasks.register<Delete>("clean") {
     delete(rootProject.layout.buildDirectory)

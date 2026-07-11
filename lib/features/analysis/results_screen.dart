@@ -119,7 +119,7 @@ class ResultsScreen extends ConsumerWidget {
                 OutlinedButton.icon(
                   icon: const Icon(Icons.slow_motion_video),
                   label: const Text('Annotated replay'),
-                  onPressed: () => context.go('/replay'),
+                  onPressed: () => context.push('/replay'),
                 ),
               ],
             ),
